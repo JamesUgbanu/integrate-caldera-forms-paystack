@@ -34,7 +34,7 @@ define( 'WPCFPS_PLUGIN_PATH', dirname(__FILE__) );
 
 
 if ( ! version_compare( PHP_VERSION, '5.6', '>=' ) ) {
-	add_action( 'admin_notices', 'icfs_fail_php_version' );
+	add_action( 'admin_notices', 'icfp_fail_php_version' );
 } else {
 	// Include the ICFS class.
 	require_once dirname( __FILE__ ) . '/inc/class-icfp.php';

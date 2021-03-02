@@ -49,6 +49,8 @@ if ( ! class_exists( 'ICFP', false ) ) :
 	    	
 	    	//Register Processor Hook
 	   		add_filter( 'caldera_forms_get_form_processors',  array( $this, 'icfp_register_processor' ) );
+			
+			add_filter( 'caldera_forms_submit_return_redirect', array( $this, 'my_redirect' ) );
 	   		
 		}
 		/**
@@ -94,55 +96,53 @@ if ( ! class_exists( 'ICFP', false ) ) :
 		 *
 		 * @return void|array
 		 */
-
+		
 		public function cf_paystack_integration_processor( $config, $form, $process_id ) {
+			global $transdata;
 
-			if( !isset( $config['lcfp_paystack_environment'] ) || empty($config['lcfp_paystack_environment'] ) ) {
+			if( !isset( $config['icfp_paystack_environment'] ) || empty($config['icfp_paystack_environment'] ) ) {
 			    return;
 			}
 
-            if( !isset( $config['lcfp_paystack_currency'] ) || empty($config['lcfp_paystack_currency'] ) ) {
+            if( !isset( $config['icfp_paystack_currency'] ) || empty($config['icfp_paystack_currency'] ) ) {
 			    return;
 			}
 
 
-			if( !isset( $config['lcfp_test_key'] ) || empty( $config['lcfp_test_key'] ) ){
-			    return;
-		  	}
+// 			if( !isset( $config['icfp_test_key'] ) || empty( $config['icfp_test_key'] ) || !isset( $config['icfp_live_key'] ) || empty( $config['icfp_live_key'] ) ){
+// 			    return;
+// 		  	}
 
-		  	if( !isset( $config['lcfp_live_key'] ) || empty( $config['lcfp_live_key'] ) ){
-			    return;
-		  	}
-
-		  	if( !isset( $config['lcfp_payment_name'] ) || empty( $config['lcfp_payment_name'] ) ){
+		  	if( !isset( $config['icfp_payment_name'] ) || empty( $config['icfp_payment_name'] ) ){
 			    return;
 		  	}
             
-            if( !isset( $config['lcfp_payment_description'] ) || empty( $config['lcfp_payment_description'] ) ){
+            if( !isset( $config['icfp_payment_description'] ) || empty( $config['icfp_payment_description'] ) ){
 			    return;
 		  	}
             
-            if( !isset( $config['lcfp_payment_amount'] ) || empty( $config['lcfp_payment_amount'] ) ){
+            if( !isset( $config['icfp_payment_amount'] ) || empty( $config['icfp_payment_amount'] ) ){
 			    return;
 		  	}
 
-            if( !isset( $config['lcfp_payment_email'] ) || empty( $config['lcfp_payment_email'] ) ){
+            if( !isset( $config['icfp_payment_email'] ) || empty( $config['icfp_payment_email'] ) ){
 			    return;
 		  	}
 
             $paystack_url = 'https://api.paystack.co/transaction/initialize';
-			$paystack_environment = Caldera_Forms::do_magic_tags( $config['lcfp_paystack_environment'] );
+			$paystack_environment = Caldera_Forms::do_magic_tags( $config['icfp_paystack_environment'] );
 
-			$paystack_test_key = Caldera_Forms::do_magic_tags( $config['lcfp_test_key'] );
-			$paystack_live_key = Caldera_Forms::do_magic_tags( $config['lcfp_live_key'] );
+			$paystack_test_key = Caldera_Forms::do_magic_tags( $config['icfp_test_key'] );
+			$paystack_live_key = Caldera_Forms::do_magic_tags( $config['icfp_live_key'] );
 
-			$paystack_payment_currency = Caldera_Forms::do_magic_tags( $config['lcfp_paystack_currency'] );
+			$paystack_payment_currency = Caldera_Forms::do_magic_tags( $config['icfp_paystack_currency'] );
 
-			$paystack_payment_name = Caldera_Forms::do_magic_tags( $config['lcfp_payment_name'] );
-			$paystack_payment_description = Caldera_Forms::do_magic_tags( $config['lcfp_payment_description'] );
+			$paystack_payment_name = Caldera_Forms::do_magic_tags( $config['icfp_payment_name'] );
+			$paystack_payment_description = Caldera_Forms::do_magic_tags( $config['icfp_payment_description'] );
 
-		  	$paystack_payment_email = Caldera_Forms::do_magic_tags( $config['lcfp_payment_email'] );
-		  	$paystack_payment_amount = Caldera_Forms::do_magic_tags( $config['lcfp_payment_amount'] );
+		  	$paystack_payment_email = Caldera_Forms::do_magic_tags( $config['icfp_payment_email'] );
+		  	$paystack_payment_amount = Caldera_Forms::do_magic_tags( $config['icfp_payment_amount'] );
+			
 
 		  	/* sending form submission data to Paystack using Paystack REST API*/
 
@@ -174,23 +174,30 @@ if ( ! class_exists( 'ICFP', false ) ) :
 
                 // POST the data to Paystack
                 $request = wp_remote_post($paystack_url, $args);
+			
                 if (!is_wp_error($request)) {
                     	// Find out what the response code is
                   $paystack_response = json_decode(wp_remote_retrieve_body($request));
             
                     if ($paystack_response->status) {
                         
-                        $url = $paystack_response->data->authorization_url;
-                       
-                        $response = array(
-                            'redirect_url' => esc_url($url),
-                            );
-                            
-                         _e(json_encode($response));
-                            wp_die();
+                    $url = $paystack_response->data->authorization_url;
+					
               }
-                exit;
+					$transdata[ 'my_slug' ][ 'url' ] = $url;
+						return array(
+							'type' => 'success'
+						);
+
              }
+			
+		}
+		
+		public function my_redirect($url = null, $form = null, $config = null, $processid = null){
+			global $transdata;
+			if ( !empty( $transdata[ 'my_slug' ] ) && ! empty( $transdata[ 'my_slug' ][ 'url' ] ) ) {
+				return $transdata[ 'my_slug' ][ 'url' ];
+			}
 		}
 
 	}

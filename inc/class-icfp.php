@@ -108,11 +108,6 @@ if ( ! class_exists( 'ICFP', false ) ) :
 			    return;
 			}
 
-
-// 			if( !isset( $config['icfp_test_key'] ) || empty( $config['icfp_test_key'] ) || !isset( $config['icfp_live_key'] ) || empty( $config['icfp_live_key'] ) ){
-// 			    return;
-// 		  	}
-
 		  	if( !isset( $config['icfp_payment_name'] ) || empty( $config['icfp_payment_name'] ) ){
 			    return;
 		  	}
@@ -146,11 +141,16 @@ if ( ! class_exists( 'ICFP', false ) ) :
 
 		  	/* sending form submission data to Paystack using Paystack REST API*/
 
-		  	if( $paystack_environment == "1" ) { 
-		  		$key = $paystack_live_key;
+		  	if( $paystack_environment == "1" ) {
+					$key = $paystack_live_key;
 		  	} else {
                 $key = $paystack_test_key;
 		  	}
+			
+			if(empty($key)) {
+				return;
+			}
+			
             $amount = $paystack_payment_amount*100;
 		  	
               //header
@@ -190,6 +190,21 @@ if ( ! class_exists( 'ICFP', false ) ) :
 						);
 
              }
+			
+			//find and return error
+			if( is_wp_error( $response ) ){
+				$error = $response->get_error_message();
+			}elseif ( isset( $response[ 'error' ]) ){	
+				$error =  $response[ 'error' ];
+			}else{
+				$error = 'Something bad happened';
+			}
+
+			//returning in pre-precess stops submission processing.
+			return array(
+				'note' => $error,
+				'type' => 'error'
+			);
 			
 		}
 		

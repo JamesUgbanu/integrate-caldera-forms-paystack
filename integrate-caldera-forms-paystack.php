@@ -5,7 +5,7 @@
  * Description: The integration of Caldera Forms and Paystack plugin lets you add a new payment option Processor to Caldera form. It automatically send data from your Caldera form to your Paystack when the form is submitted.
  * Version:     1.0.0
  * Author:      James Ugbanu
- * Author URI:  https://crystalwebpro.com
+ * Author URI:  https://crystalwebpro.com/open-source/
  * License:     GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: integrate-caldera-forms-paystack

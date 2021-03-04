@@ -28,6 +28,9 @@ The integration of Caldera Forms and Paystack plugin lets you add a new payment 
 3. Click install.
 4. Click activate.
 
+= Plugin not working = 
+clear your cache
+
 == Screenshots ==
 1. Paystack Processor
 2. Paystack Integration configuration page

@@ -8,7 +8,7 @@
  * Author URI:  https://crystalwebpro.com/open-source/
  * License:     GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: integrate-caldera-forms-paystack
+ * Text Domain: integrate-of-caldera-forms-and-paystack
  * Domain Path: /
  * Tested up to: 5.6.2
  *
@@ -55,7 +55,7 @@ function icfp_fail_php_version() {
 	}
 
 	/* translators: %s: PHP version */
-	$message      = sprintf( esc_html__( 'Caldera Forms Paystack Integration requires PHP version %s+, plugin is currently NOT RUNNING.', 'integrate-caldera-forms-paystack' ), '5.6' );
+	$message      = sprintf( esc_html__( 'Caldera Forms Paystack Integration requires PHP version %s+, plugin is currently NOT RUNNING.', 'integrate-of-caldera-forms-and-paystack' ), '5.6' );
 	$html_message = sprintf( '<div class="error">%s</div>', wpautop( $message ) );
 	echo wp_kses_post( $html_message );
 }

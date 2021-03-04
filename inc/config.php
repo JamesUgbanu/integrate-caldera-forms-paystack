@@ -45,12 +45,12 @@
     </div>
 </div>
 
-<div class="caldera-config-group">
+<!-- <div class="caldera-config-group">
     <label><?php esc_html_e( 'Payment description', 'integrate-caldera-forms-paystack' ); ?> </label>
     <div class="caldera-config-field">
         <input type="text" class="block-input field-config magic-tag-enabled caldera-field-bind required" id="icfp_payment_description" name="{{_name}}[icfp_payment_description]" value="{{icfp_payment_description}}">
     </div>
-</div>
+</div> -->
 
 <div class="caldera-config-group">
     <label><?php esc_html_e( 'Amount', 'integrate-caldera-forms-salesforce' ); ?> </label>

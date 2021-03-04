@@ -43,6 +43,8 @@ if ( ! class_exists( 'ICFP', false ) ) :
          * @return void
          */
 		public function __construct() {
+            	// Load text domain
+			add_action( 'plugins_loaded', array( $this, 'icfp_plugin_load_textdomain' ) );
 
 			// Check whether Caldera form is active or not
 			register_activation_hook( __FILE__, array( $this, 'icfp_integration_activate' ) );
@@ -62,6 +64,16 @@ if ( ! class_exists( 'ICFP', false ) ) :
 			 if( ! function_exists( 'caldera_forms_load' ) ) {
 			    wp_die( 'The "Caldera Forms" Plugin must be activated before activating the "Caldera Forms - Paystack Integration" Plugin.' );
 			}
+		}
+
+        /**
+		  * Load plugin textdomain.
+		  *
+		  * @since 1.0
+		  */
+
+		public function icfp_plugin_load_textdomain() {
+			load_plugin_textdomain( 'integrate-caldera-forms-salesforce', false, basename( dirname( __FILE__ ) ) . '/languages' );
 		}
 
 		/**
@@ -112,10 +124,6 @@ if ( ! class_exists( 'ICFP', false ) ) :
 			    return;
 		  	}
             
-            if( !isset( $config['icfp_payment_description'] ) || empty( $config['icfp_payment_description'] ) ){
-			    return;
-		  	}
-            
             if( !isset( $config['icfp_payment_amount'] ) || empty( $config['icfp_payment_amount'] ) ){
 			    return;
 		  	}
@@ -133,7 +141,6 @@ if ( ! class_exists( 'ICFP', false ) ) :
 			$paystack_payment_currency = Caldera_Forms::do_magic_tags( $config['icfp_paystack_currency'] );
 
 			$paystack_payment_name = Caldera_Forms::do_magic_tags( $config['icfp_payment_name'] );
-			$paystack_payment_description = Caldera_Forms::do_magic_tags( $config['icfp_payment_description'] );
 
 		  	$paystack_payment_email = Caldera_Forms::do_magic_tags( $config['icfp_payment_email'] );
 		  	$paystack_payment_amount = Caldera_Forms::do_magic_tags( $config['icfp_payment_amount'] );
@@ -142,7 +149,7 @@ if ( ! class_exists( 'ICFP', false ) ) :
 		  	/* sending form submission data to Paystack using Paystack REST API*/
 
 		  	if( $paystack_environment == "1" ) {
-					$key = $paystack_live_key;
+				$key = $paystack_live_key;
 		  	} else {
                 $key = $paystack_test_key;
 		  	}
@@ -171,24 +178,23 @@ if ( ! class_exists( 'ICFP', false ) ) :
                     'headers'   => $headers,
                     'timeout'   => 60
                 );
-
+			
                 // POST the data to Paystack
                 $request = wp_remote_post($paystack_url, $args);
 			
                 if (!is_wp_error($request)) {
                     	// Find out what the response code is
                   $paystack_response = json_decode(wp_remote_retrieve_body($request));
-            
+
                     if ($paystack_response->status) {
                         
                     $url = $paystack_response->data->authorization_url;
-					
-              }
 					$transdata[ 'my_slug' ][ 'url' ] = $url;
 						return array(
 							'type' => 'success'
 						);
-
+              		}
+					return;
              }
 			
 			//find and return error

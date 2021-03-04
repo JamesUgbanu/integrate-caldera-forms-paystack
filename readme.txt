@@ -1,6 +1,7 @@
 === Integration of Caldera Forms and Paystack ===
-Contributors: James Ugbanu
-Tags: paystack, caldera paystack addons, caldera payment, nigeria, caldera paystack
+Contributors: crystalwebpro
+Tags: Paystack, Caldera Paystack addons, Caldera payment, Nigeria, Caldera Paystack
+Author URI: https://crystalwebpro.com/open-source/
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 5.6.2
@@ -28,8 +29,10 @@ The integration of Caldera Forms and Paystack plugin lets you add a new payment 
 3. Click install.
 4. Click activate.
 
+== Frequently Asked Questions ==
+
 = Plugin not working = 
-clear your cache
+ clear your cache
 
 == Screenshots ==
 1. Paystack Processor
